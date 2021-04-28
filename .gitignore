@@ -128,5 +128,8 @@ dmypy.json
 # Pyre type checker
 .pyre/
 
+# idea
+.idea
+
 # data
-notebooks/heart.csv
+ml_project/notebooks/heart.csv
