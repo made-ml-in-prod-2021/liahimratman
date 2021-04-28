@@ -14,6 +14,7 @@ setup(
         "pandas==1.2.4",
         "scikit-learn==0.24.1",
         "python-dotenv>=0.5.1",
+        "scikit-learn==0.24.2",
     ],
     license="MIT",
 )
