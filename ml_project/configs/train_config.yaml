@@ -1,0 +1,26 @@
+input_data_path: "data/heart.csv"
+output_model_path: "models/model.pkl"
+metric_path: "models/metrics.json"
+splitting_params:
+  val_size: 0.2
+  random_state: 4
+train_params:
+  model_type: "LinearRegression"
+  random_state: 100
+feature_params:
+  features:
+    - "age"
+    - "sex"
+    - "cp"
+    - "trestbps"
+    - "chol"
+    - "fbs"
+    - "restecg"
+    - "thalach"
+    - "exang"
+    - "oldpeak"
+    - "slope"
+    - "ca"
+    - "thal"
+    - "ageRange"
+  target_col: "target"
