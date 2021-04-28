@@ -132,4 +132,4 @@ dmypy.json
 .idea
 
 # data
-ml_project/notebooks/heart.csv
+ml_project/data/heart.csv
