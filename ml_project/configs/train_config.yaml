@@ -1,6 +1,6 @@
 input_data_path: "C:/Users/Mikhail Korotkov/PycharmProjects/liahimratman/ml_project/data/heart.csv"
-output_model_path: "models/model.pkl"
-metric_path: "models/metrics.json"
+output_model_path: "C:/Users/Mikhail Korotkov/PycharmProjects/liahimratman/ml_project/models/model.pkl"
+metric_path: "C:/Users/Mikhail Korotkov/PycharmProjects/liahimratman/ml_project/models/metrics.json"
 splitting_params:
   val_size: 0.2
   random_state: 4
