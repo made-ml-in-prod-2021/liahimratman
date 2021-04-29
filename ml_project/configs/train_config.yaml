@@ -1,16 +1,15 @@
-input_data_path: "data/heart.csv"
+input_data_path: "C:/Users/Mikhail Korotkov/PycharmProjects/liahimratman/ml_project/data/heart.csv"
 output_model_path: "models/model.pkl"
 metric_path: "models/metrics.json"
 splitting_params:
   val_size: 0.2
   random_state: 4
 train_params:
-  model_type: "LinearRegression"
+  model_type: "LogisticRegression"
   random_state: 100
 feature_params:
-  features:
+  numerical_features:
     - "age"
-    - "sex"
     - "cp"
     - "trestbps"
     - "chol"
@@ -22,5 +21,6 @@ feature_params:
     - "slope"
     - "ca"
     - "thal"
-    - "ageRange"
+  categorical_features:
+    - "sex"
   target_col: "target"
