@@ -1,8 +1,8 @@
 input_data_path: "C:/Users/Mikhail Korotkov/PycharmProjects/liahimratman/ml_project/data/heart.csv"
 model_path: "C:/Users/Mikhail Korotkov/PycharmProjects/liahimratman/ml_project/models/model.pkl"
 scaler_params:
-  - "mean"
-  - "scale"
+  mean: 0
+  scale: 1
 feature_params:
   numerical_features:
     - "age"
