@@ -1,0 +1,21 @@
+input_data_path: "C:/Users/Mikhail Korotkov/PycharmProjects/liahimratman/ml_project/data/heart.csv"
+model_path: "C:/Users/Mikhail Korotkov/PycharmProjects/liahimratman/ml_project/models/model.pkl"
+scaler_params:
+  - "mean"
+  - "scale"
+feature_params:
+  numerical_features:
+    - "age"
+    - "cp"
+    - "trestbps"
+    - "chol"
+    - "fbs"
+    - "restecg"
+    - "thalach"
+    - "exang"
+    - "oldpeak"
+    - "slope"
+    - "ca"
+    - "thal"
+  categorical_features:
+    - "sex"
