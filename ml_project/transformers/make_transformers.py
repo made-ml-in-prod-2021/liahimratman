@@ -20,36 +20,43 @@ class StandardScalerTransformer(TransformerMixin, BaseEstimator):
             del self.mean_
             del self.var_
 
-    def fit(self, X):
+    def fit(self, X, mean=None, scale=None):
         self._reset()
-        return self.partial_fit(X)
+        return self.partial_fit(X, mean, scale)
 
-    def partial_fit(self, X):
-        first_call = not hasattr(self, "n_samples_seen_")
-        X = self._validate_data(X, estimator=self, dtype=FLOAT_DTYPES,
-                                force_all_finite='allow-nan', reset=first_call)
-        n_features = X.shape[1]
-        dtype = np.int64
+    def partial_fit(self, X, mean, scale):
+        if mean:
+            if X.shape[1] != mean.shape:
+                print('X', X.shape[1], mean.shape)
+                raise NotImplementedError()
+            self.mean_ = mean
+            self.scale_ = scale
+        else:
+            first_call = not hasattr(self, "n_samples_seen_")
+            X = self._validate_data(X, estimator=self, dtype=FLOAT_DTYPES,
+                                    force_all_finite='allow-nan', reset=first_call)
+            n_features = X.shape[1]
+            dtype = np.int64
 
-        if not hasattr(self, 'n_samples_seen_'):
-            self.n_samples_seen_ = np.zeros(n_features, dtype=dtype)
-        elif np.size(self.n_samples_seen_) == 1:
-            self.n_samples_seen_ = np.repeat(
-                self.n_samples_seen_, X.shape[1])
-            self.n_samples_seen_ = \
-                self.n_samples_seen_.astype(dtype, copy=False)
+            if not hasattr(self, 'n_samples_seen_'):
+                self.n_samples_seen_ = np.zeros(n_features, dtype=dtype)
+            elif np.size(self.n_samples_seen_) == 1:
+                self.n_samples_seen_ = np.repeat(
+                    self.n_samples_seen_, X.shape[1])
+                self.n_samples_seen_ = \
+                    self.n_samples_seen_.astype(dtype, copy=False)
 
-        if not hasattr(self, 'scale_'):
-            self.mean_ = .0
-            self.var_ = .0
-        self.mean_, self.var_, self.n_samples_seen_ = \
-            _incremental_mean_and_var(X, self.mean_, self.var_,
-                                      self.n_samples_seen_)
+            if not hasattr(self, 'scale_'):
+                self.mean_ = .0
+                self.var_ = .0
+            self.mean_, self.var_, self.n_samples_seen_ = \
+                _incremental_mean_and_var(X, self.mean_, self.var_,
+                                          self.n_samples_seen_)
 
-        if np.ptp(self.n_samples_seen_) == 0:
-            self.n_samples_seen_ = self.n_samples_seen_[0]
+            if np.ptp(self.n_samples_seen_) == 0:
+                self.n_samples_seen_ = self.n_samples_seen_[0]
 
-        self.scale_ = _handle_zeros_in_scale(np.sqrt(self.var_))
+            self.scale_ = _handle_zeros_in_scale(np.sqrt(self.var_))
 
         return self
 
@@ -57,10 +64,9 @@ class StandardScalerTransformer(TransformerMixin, BaseEstimator):
         check_is_fitted(self)
 
         copy = copy if copy is not None else self.copy
-        X = self._validate_data(X, reset=False, copy=copy,
+        X = self._validate_data(X, copy=copy, reset=False,
                                 estimator=self, dtype=FLOAT_DTYPES,
                                 force_all_finite='allow-nan')
-
         X -= self.mean_
         X /= self.scale_
 
