@@ -56,3 +56,16 @@ def serialize_model(model: SklearnClassificationModel, output: str) -> str:
         pickle.dump(model, f)
 
     return output
+
+
+def load_model(input_model_path: str):
+    with open(input_model_path, 'rb') as input_stream:
+        model = pickle.load(input_stream)
+
+    return model
+
+
+def save_predictions(output_data_path: str, predicts: list) -> str:
+    pd.DataFrame(predicts, columns=['target']).to_csv(output_data_path, index_label='index')
+
+    return output_data_path

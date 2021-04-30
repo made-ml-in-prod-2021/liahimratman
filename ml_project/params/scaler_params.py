@@ -1,8 +1,8 @@
 from dataclasses import dataclass
-from typing import List, Optional
+from typing import List
 
 
 @dataclass()
 class ScalerParams:
-    mean: str = List[str]
-    scale: int = List[str]
+    mean: List[str]
+    scale: List[str]

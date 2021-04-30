@@ -26,8 +26,8 @@ class StandardScalerTransformer(TransformerMixin, BaseEstimator):
 
     def partial_fit(self, X, mean, scale):
         if mean:
-            if X.shape[1] != mean.shape:
-                print('X', X.shape[1], mean.shape)
+            if X.shape[1] != len(mean):
+                print('X', X.shape[1], len(mean))
                 raise NotImplementedError()
             self.mean_ = mean
             self.scale_ = scale

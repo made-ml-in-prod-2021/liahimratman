@@ -10,9 +10,8 @@ import yaml
 @dataclass()
 class EvaluationPipelineParams:
     input_data_path: str
-    input_model_path: str
     output_data_path: str
-    output_metric_path: str
+    input_model_path: str
     feature_params: FeatureParams
     scaler_params: ScalerParams
 
@@ -30,7 +29,8 @@ def write_evaluation_pipeline_params(output_path: str, path_to_model: str,
                                      feature_params: FeatureParams, scaler: StandardScalerTransformer) -> str:
     eval_config = {
         "input_data_path": None,
-        "model_path": path_to_model,
+        "output_data_path": None,
+        "input_model_path": path_to_model,
         "scaler_params": {
             "mean": list(map(str, list(scaler.mean_))),
             "scale": list(map(str, list(scaler.scale_))),

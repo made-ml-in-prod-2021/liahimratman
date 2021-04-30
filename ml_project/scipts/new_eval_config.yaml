@@ -14,8 +14,9 @@ feature_params:
   - slope
   - ca
   - thal
-input_data_path: null
-model_path: C:/Users/Mikhail Korotkov/PycharmProjects/liahimratman/ml_project/models/model.pkl
+input_data_path: C:/Users/Mikhail Korotkov/PycharmProjects/liahimratman/ml_project/data/heart.csv
+input_model_path: C:/Users/Mikhail Korotkov/PycharmProjects/liahimratman/ml_project/models/model.pkl
+output_data_path: C:/Users/Mikhail Korotkov/PycharmProjects/liahimratman/ml_project/models/predicted_results.csv
 scaler_params:
   mean:
   - '55.082644628099175'
