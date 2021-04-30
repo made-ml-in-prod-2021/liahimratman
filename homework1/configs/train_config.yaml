@@ -1,6 +1,6 @@
 input_data_path: ml_project/data/heart.csv
 output_model_path: ml_project/models/model.pkl
-output_config_path: ml_project/configs/evaluation_config.yaml
+output_config_path: configs/evaluation_config.yaml
 metric_path: ml_project/models/metrics.json
 splitting_params:
   val_size: 0.2

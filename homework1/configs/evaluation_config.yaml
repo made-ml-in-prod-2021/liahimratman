@@ -16,7 +16,7 @@ feature_params:
   - thal
 input_data_path: ml_project/data/heart.csv
 input_model_path: ml_project/models/model.pkl
-output_data_path: ml_project/output_data/predicted.csv
+output_data_path: output_data/predicted.csv
 scaler_params:
   mean:
   - '55.082644628099175'

@@ -3,17 +3,15 @@ import sys
 
 import click
 
-from data_functions import read_data
-from models.model_fit_predict import save_predictions, load_model
-from params.evaluation_pipeline_params import (
+from ml_project.data_functions.make_dataset import read_data
+from ml_project.models.model_fit_predict import save_predictions, load_model
+from ml_project.params.evaluation_pipeline_params import (
     EvaluationPipelineParams,
     read_evaluation_pipeline_params,
 )
-from features import make_features
-from features.build_features import build_transformers
-from models import (
-    predict_model,
-)
+
+from ml_project.features.build_features import build_transformers, make_features
+from ml_project.models.model_fit_predict import predict_model
 
 logger = logging.getLogger(__name__)
 handler = logging.StreamHandler(sys.stdout)

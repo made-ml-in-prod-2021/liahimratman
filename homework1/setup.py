@@ -15,6 +15,8 @@ setup(
         "scikit-learn==0.24.1",
         "python-dotenv>=0.5.1",
         "scikit-learn==0.24.2",
+        "scipy==1.6.3",
+        "pytest==6.2.3",
     ],
     license="MIT",
 )
