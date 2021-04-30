@@ -9,6 +9,7 @@ from sklearn.linear_model import LogisticRegression
 from ml_project.data_functions.make_dataset import read_data, split_train_val_data
 from ml_project.params.split_params import SplittingParams
 from ml_project.params.train_params import TrainingParams
+from ml_project.params.train_pipeline_params import TrainingPipelineParams
 from ml_project.params.feature_params import FeatureParams
 from ml_project.features.build_features import make_features, extract_target, build_transformers
 from ml_project.models.model_fit_predict import train_model, serialize_model
@@ -96,3 +97,84 @@ def test_serialize_model(tmpdir: LocalPath):
     with open(real_output, "rb") as f:
         model = pickle.load(f)
     assert isinstance(model, LogisticRegression)
+
+
+
+
+from pathlib import Path
+import json
+from train_pipeline import train_pipeline
+# from typing import List, Callable, OrderedDict
+#
+# import numpy as np
+# import yaml
+#
+# from heart_disease.entities.data_loading_config import DataLoadingConfig
+# from heart_disease.entities.model_config import TrainModelConfig, EvaluateModelConfig, ModelType
+# from heart_disease.entities.pipeline_config import TrainingConfig, PredictConfig
+# from heart_disease.entities.splitting_config import SplittingConfig
+# from heart_disease.models.predict_model import predict
+# from heart_disease.models.train_model import train_pipeline
+
+
+def get_feature_config(
+        target_column: str,
+        categorical_features: List[str],
+        numerical_features: List[str],
+):
+    config = FeatureParams(
+        target_col=target_column,
+        numerical_features=numerical_features,
+        categorical_features=categorical_features,
+    )
+    return config
+
+
+def train_tmp_model(
+        categorical_features: List[str],
+        dataset_path: str,
+        numerical_features: List[str],
+        target_col: str,
+        tmpdir: Path
+):
+    model_save_path = str(tmpdir / "model.pkl")
+    metrics_path = str(tmpdir / "metrics.json")
+    output_config_path = str(tmpdir / "out_config.yaml")
+    feature_config = get_feature_config(target_col, categorical_features, numerical_features)
+    config = TrainingPipelineParams(
+        splitting_params=SplittingParams(
+            val_size=0.2,
+            random_state=4,
+        ),
+        feature_params=feature_config,
+        train_params=TrainingParams(
+            model_type="LogisticRegression",
+            random_state=4,
+        ),
+        input_data_path=dataset_path,
+        output_model_path=model_save_path,
+        output_config_path=output_config_path,
+        metric_path=metrics_path,
+    )
+    train_pipeline(config)
+    return metrics_path, model_save_path
+
+
+def test_train_pipeline(
+        tmpdir: Path,
+        dataset_path: str,
+        categorical_features: List[str],
+        numerical_features: List[str],
+        target_col: str
+):
+    metrics_path, model_save_path = train_tmp_model(categorical_features, dataset_path,
+                                                                    numerical_features, target_col,
+                                                                    tmpdir)
+    assert Path(model_save_path).exists()
+    assert Path(metrics_path).exists()
+    with open(metrics_path, "r") as f:
+        metric_values = json.load(f)
+        assert metric_values["accuracy"] > 0
+        assert metric_values["f1"] > 0
+        assert metric_values["precision"] > 0
+        assert metric_values["recall"] > 0
