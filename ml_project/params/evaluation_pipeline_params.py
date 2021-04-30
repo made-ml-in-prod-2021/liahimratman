@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 
-from ml_project.transformers.make_transformers import StandardScalerTransformer
+from transformers.make_transformers import StandardScalerTransformer
 from .feature_params import FeatureParams
 from .scaler_params import ScalerParams
 from marshmallow_dataclass import class_schema

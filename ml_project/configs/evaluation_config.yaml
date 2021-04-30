@@ -14,8 +14,8 @@ feature_params:
   - slope
   - ca
   - thal
-input_data_path: data/heart.csv
-input_model_path: models/model.pkl
+input_data_path: null
+input_model_path: ml_project/models/model.pkl
 output_data_path: output_data/predicted.csv
 scaler_params:
   mean:

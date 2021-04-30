@@ -1,19 +1,18 @@
-import json
 import logging
 import sys
 
 import click
 
-from ml_project.data_functions import read_data, split_train_val_data
-from ml_project.models.model_fit_predict import save_metrics
-from ml_project.params.evaluation_pipeline_params import write_evaluation_pipeline_params
-from ml_project.params.train_pipeline_params import (
+from data_functions import read_data, split_train_val_data
+from models.model_fit_predict import save_metrics
+from params.evaluation_pipeline_params import write_evaluation_pipeline_params
+from params.train_pipeline_params import (
     TrainingPipelineParams,
     read_training_pipeline_params,
 )
-from ml_project.features import make_features
-from ml_project.features.build_features import extract_target, build_transformers
-from ml_project.models import (
+from features import make_features
+from features.build_features import extract_target, build_transformers
+from models import (
     train_model,
     serialize_model,
     predict_model,
@@ -100,13 +99,12 @@ def train_pipeline(training_pipeline_params: TrainingPipelineParams):
     return metrics, eval_config_path
 
 
-# @click.command(name="train_pipeline")
-# @click.argument("config_path")
+@click.command(name="train_pipeline")
+@click.argument("config_path")
 def train_pipeline_command(config_path: str):
     params = read_training_pipeline_params(config_path)
     train_pipeline(params)
 
 
 if __name__ == "__main__":
-    train_pipeline_command(
-        "configs/train_config.yaml")
+    train_pipeline_command()

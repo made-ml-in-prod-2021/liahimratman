@@ -5,8 +5,8 @@ from sklearn.impute import SimpleImputer
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import OneHotEncoder
 
-from ml_project.params.feature_params import FeatureParams
-from ml_project.transformers.make_transformers import StandardScalerTransformer
+from params.feature_params import FeatureParams
+from transformers.make_transformers import StandardScalerTransformer
 
 
 def process_categorical_features(categorical_df: pd.DataFrame) -> pd.DataFrame:
