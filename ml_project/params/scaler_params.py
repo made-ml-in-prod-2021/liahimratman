@@ -1,7 +1,8 @@
-from dataclasses import dataclass, field
+from dataclasses import dataclass
+from typing import List, Optional
 
 
 @dataclass()
 class ScalerParams:
-    mean: str = field(default=0)
-    scale: int = field(default=1)
+    mean: str = List[str]
+    scale: int = List[str]
