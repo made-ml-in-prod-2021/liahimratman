@@ -40,16 +40,18 @@ def make_features(transformers: dict, df: pd.DataFrame, mode="val", scaler_param
     if mode in ["train", "eval"]:
         transformers["column_transformer"].fit(df)
     df = pd.DataFrame(transformers["column_transformer"].transform(df))
+
     if mode == "train":
         transformers["standard_scaler_transformer"].fit(df)
     elif mode == "eval":
         precomputed_means = list(map(float, scaler_params.mean))
         precomputed_scales = list(map(float, scaler_params.scale))
         transformers["standard_scaler_transformer"].fit(df, precomputed_means, precomputed_scales)
+
     return pd.DataFrame(transformers["standard_scaler_transformer"].transform(df)), transformers
 
 
-def build_transformers(params: FeatureParams) -> dict:
+def build_transformers(params: FeatureParams) -> {str: ColumnTransformer, str: StandardScalerTransformer}:
     column_transformer = ColumnTransformer(
         [
             (
@@ -72,11 +74,6 @@ def build_transformers(params: FeatureParams) -> dict:
     }
 
     return transformers
-
-
-# def build_standard_scaler_transformer() -> StandardScalerTransformer:
-#     transformer = StandardScalerTransformer()
-#     return transformer
 
 
 def extract_target(df: pd.DataFrame, params: FeatureParams) -> pd.Series:

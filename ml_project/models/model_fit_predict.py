@@ -58,7 +58,7 @@ def serialize_model(model: SklearnClassificationModel, output: str) -> str:
     return output
 
 
-def load_model(input_model_path: str):
+def load_model(input_model_path: str) -> SklearnClassificationModel:
     with open(input_model_path, 'rb') as input_stream:
         model = pickle.load(input_stream)
 
