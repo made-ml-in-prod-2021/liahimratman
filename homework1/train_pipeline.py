@@ -1,11 +1,7 @@
 import logging
 import sys
 import click
-import os
-print(os.path.dirname(sys.modules['__main__'].__file__))
-# from heart_disease.params.feature_params import FeatureParams
-# from heart_disease.params.split_params import SplittingParams
-# from heart_disease.params.train_params import TrainingParams
+
 from ml_project.data_functions.make_dataset import read_data, split_train_val_data
 from ml_project.models.model_fit_predict import save_metrics, train_model, serialize_model, predict_model, evaluate_model
 from ml_project.params.evaluation_pipeline_params import write_evaluation_pipeline_params
