@@ -36,10 +36,13 @@ def build_numerical_pipeline() -> Pipeline:
     return num_pipeline
 
 
-def make_features(column_transformer: ColumnTransformer, standard_scaler_transformer: StandardScalerTransformer,
-                  df: pd.DataFrame) -> pd.DataFrame:
-    df = pd.DataFrame(column_transformer.transform(df))
-    return pd.DataFrame(standard_scaler_transformer.transform(df))
+def make_features(transformers: dict, df: pd.DataFrame, mode="eval") -> pd.DataFrame:
+    if mode == "train":
+        transformers["column_transformer"].fit(df)
+    df = pd.DataFrame(transformers["column_transformer"].transform(df))
+    if mode == "train":
+        transformers["standard_scaler_transformer"].fit(df)
+    return pd.DataFrame(transformers["standard_scaler_transformer"].transform(df)), transformers
 
 
 def build_transformers(params: FeatureParams) -> dict:

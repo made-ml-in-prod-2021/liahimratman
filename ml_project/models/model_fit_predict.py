@@ -21,7 +21,7 @@ def train_model(
             n_estimators=100, random_state=train_params.random_state
         )
     elif train_params.model_type == "LogisticRegression":
-        model = LogisticRegression(random_state=train_params.random_state)
+        model = LogisticRegression(max_iter=train_params.max_iter, random_state=train_params.random_state)
     else:
         raise NotImplementedError()
     model.fit(features, target)
