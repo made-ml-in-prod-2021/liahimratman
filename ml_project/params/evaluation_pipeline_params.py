@@ -29,7 +29,7 @@ def write_evaluation_pipeline_params(output_path: str, path_to_model: str,
                                      feature_params: FeatureParams, scaler: StandardScalerTransformer) -> str:
     eval_config = {
         "input_data_path": None,
-        "output_data_path": None,
+        "output_data_path": "output_data/predicted.csv",
         "input_model_path": path_to_model,
         "scaler_params": {
             "mean": list(map(str, list(scaler.mean_))),
@@ -40,6 +40,7 @@ def write_evaluation_pipeline_params(output_path: str, path_to_model: str,
             "categorical_features": feature_params.categorical_features,
         }
     }
+
     with open(output_path, "w") as output_stream:
         yaml.safe_dump(eval_config, output_stream)
 

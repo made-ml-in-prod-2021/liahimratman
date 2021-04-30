@@ -46,10 +46,10 @@ def train_pipeline(training_pipeline_params: TrainingPipelineParams):
         train_features, train_target, training_pipeline_params.train_params
     )
 
-    val_features, _ = make_features(transformers, val_df, mode="eval")
+    val_features, _ = make_features(transformers, val_df, mode="val")
     val_target = extract_target(val_df, training_pipeline_params.feature_params)
-
     logger.info(f"val_features.shape is {val_features.shape}")
+
     predicts = predict_model(
         model,
         val_features
@@ -67,12 +67,11 @@ def train_pipeline(training_pipeline_params: TrainingPipelineParams):
 
     path_to_model = serialize_model(model, training_pipeline_params.output_model_path)
 
-    eval_config_path = write_evaluation_pipeline_params(output_path="new_eval_config.yaml", path_to_model=path_to_model,
+    eval_config_path = write_evaluation_pipeline_params(output_path=training_pipeline_params.output_config_path,
+                                                        path_to_model=path_to_model,
                                                         feature_params=training_pipeline_params.feature_params,
                                                         scaler=transformers["standard_scaler_transformer"])
-    # import yaml
-    # with open("new_eval_config.yaml", "r") as input_stream:
-    #     print(yaml.safe_load(input_stream))
+
     return metrics, eval_config_path
 
 
@@ -85,4 +84,4 @@ def train_pipeline_command(config_path: str):
 
 if __name__ == "__main__":
     train_pipeline_command(
-        "C:/Users/Mikhail Korotkov/PycharmProjects/liahimratman/ml_project/configs/train_config.yaml")
+        "configs/train_config.yaml")

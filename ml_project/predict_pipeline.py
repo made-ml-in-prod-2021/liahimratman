@@ -1,24 +1,18 @@
-import json
 import logging
 import sys
 
 import click
-import pandas as pd
 
 from ml_project.data_functions import read_data
-from ml_project.models.load_model import load_model
-from ml_project.models.model_fit_predict import save_predictions
+from ml_project.models.model_fit_predict import save_predictions, load_model
 from ml_project.params.evaluation_pipeline_params import (
     EvaluationPipelineParams,
     read_evaluation_pipeline_params,
 )
 from ml_project.features import make_features
-from ml_project.features.build_features import extract_target, build_transformers
+from ml_project.features.build_features import build_transformers
 from ml_project.models import (
-    train_model,
-    serialize_model,
     predict_model,
-    evaluate_model,
 )
 
 logger = logging.getLogger(__name__)
@@ -44,7 +38,6 @@ def predict_pipeline(evaluation_pipeline_params: EvaluationPipelineParams):
     )
 
     save_predictions(evaluation_pipeline_params.output_data_path, predicts)
-    # print(predicts)
 
     return evaluation_pipeline_params.output_data_path
 
@@ -57,5 +50,4 @@ def evaluation_pipeline_command(config_path: str):
 
 
 if __name__ == "__main__":
-    evaluation_pipeline_command("C:/Users/Mikhail Korotkov/PycharmProjects/liahimratman/ml_project/scipts"
-                                "/new_eval_config.yaml")
+    evaluation_pipeline_command("configs/evaluation_config.yaml")
