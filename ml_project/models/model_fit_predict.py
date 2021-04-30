@@ -1,3 +1,4 @@
+import json
 import pickle
 from typing import Dict, Union
 import numpy as np
@@ -69,3 +70,10 @@ def save_predictions(output_data_path: str, predicts: list) -> str:
     pd.DataFrame(predicts, columns=['target']).to_csv(output_data_path, index_label='index')
 
     return output_data_path
+
+
+def save_metrics(metric_path: str, metrics: dict) -> str:
+    with open(metric_path, "w") as metric_file:
+        json.dump(metrics, metric_file)
+
+    return metric_path

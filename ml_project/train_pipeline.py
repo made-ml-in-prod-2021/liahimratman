@@ -5,6 +5,7 @@ import sys
 import click
 
 from ml_project.data_functions import read_data, split_train_val_data
+from ml_project.models.model_fit_predict import save_metrics
 from ml_project.params.evaluation_pipeline_params import write_evaluation_pipeline_params
 from ml_project.params.train_pipeline_params import (
     TrainingPipelineParams,
@@ -27,50 +28,74 @@ logger.addHandler(handler)
 
 def train_pipeline(training_pipeline_params: TrainingPipelineParams):
     logger.info(f"start train pipeline with params {training_pipeline_params}")
+
+    logger.info("Reading data ...")
     data = read_data(training_pipeline_params.input_data_path)
     logger.info(f"data.shape is {data.shape}")
+
+    logger.info(f"Splitting data ...")
     train_df, val_df = split_train_val_data(
         data, training_pipeline_params.splitting_params
     )
     logger.info(f"train_df.shape is {train_df.shape}")
     logger.info(f"val_df.shape is {val_df.shape}")
 
+    logger.info("Building transformers ...")
     transformers = build_transformers(training_pipeline_params.feature_params)
+    logger.info("Transformers built")
+
+    logger.info("Making train features ...")
     train_features, transformers = make_features(transformers, train_df, mode="train")
+    logger.info(f"Train features shape is {train_features.shape}")
 
+    logger.info("Extracting train target ...")
     train_target = extract_target(train_df, training_pipeline_params.feature_params)
+    logger.info("Training target extracted")
 
-    logger.info(f"train_features.shape is {train_features.shape}")
-
+    logger.info("Training ...")
     model = train_model(
         train_features, train_target, training_pipeline_params.train_params
     )
+    logger.info("Model trained")
 
+    logger.info("Making validation features ...")
     val_features, _ = make_features(transformers, val_df, mode="val")
-    val_target = extract_target(val_df, training_pipeline_params.feature_params)
     logger.info(f"val_features.shape is {val_features.shape}")
 
+
+    logger.info("Extracting validation target ...")
+    val_target = extract_target(val_df, training_pipeline_params.feature_params)
+    logger.info("Validation target extracted")
+
+    logger.info("Start making predictions ...")
     predicts = predict_model(
         model,
         val_features
     )
+    logger.info(f"{len(predicts)} predictions made")
 
+    logger.info("Start evaluating metrics ...")
     metrics = evaluate_model(
         predicts,
         val_target
     )
+    logger.info(f"Metrics is {metrics}")
 
-    with open(training_pipeline_params.metric_path, "w") as metric_file:
-        json.dump(metrics, metric_file)
+    logger.info("Saving metrics ...")
+    save_metrics(training_pipeline_params.metric_path, metrics)
+    logger.info("Metrics saved")
 
-    logger.info(f"metrics is {metrics}")
-
+    logger.info("Saving model ...")
     path_to_model = serialize_model(model, training_pipeline_params.output_model_path)
+    logger.info("Model saved")
 
+    logger.info("Saving evaluation config ...")
     eval_config_path = write_evaluation_pipeline_params(output_path=training_pipeline_params.output_config_path,
                                                         path_to_model=path_to_model,
                                                         feature_params=training_pipeline_params.feature_params,
                                                         scaler=transformers["standard_scaler_transformer"])
+    logger.info("Evaluation config saved")
+    logger.info("Training pipeline ended")
 
     return metrics, eval_config_path
 

@@ -5,6 +5,7 @@ from .model_fit_predict import (
     predict_model,
     evaluate_model,
     save_predictions,
+    save_metrics,
 )
 
 
@@ -15,4 +16,5 @@ __all__ = [
     "evaluate_model",
     "predict_model",
     "save_predictions",
+    "save_metrics",
 ]

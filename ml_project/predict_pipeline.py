@@ -22,22 +22,36 @@ logger.addHandler(handler)
 
 
 def predict_pipeline(evaluation_pipeline_params: EvaluationPipelineParams):
-    data = read_data(evaluation_pipeline_params.input_data_path)
+    logger.info(f"start evaluation pipeline with params {evaluation_pipeline_params}")
 
+    logger.info("Reading data ...")
+    data = read_data(evaluation_pipeline_params.input_data_path)
+    logger.info(f"Input data shape is {data.shape}")
+
+    logger.info("Building transformers ...")
     transformers = build_transformers(evaluation_pipeline_params.feature_params)
+    logger.info("Transformers built")
+
+    logger.info("Making features ...")
     eval_features, _ = make_features(transformers, data, mode="eval",
                                   scaler_params=evaluation_pipeline_params.scaler_params)
+    logger.info(f"Features shape is {eval_features.shape}")
 
-    logger.info(f"train_features.shape is {eval_features.shape}")
-
+    logger.info("Loading model ...")
     model = load_model(evaluation_pipeline_params.input_model_path)
+    logger.info("Model loaded")
 
+    logger.info("Start making predictions ...")
     predicts = predict_model(
         model,
         eval_features
     )
+    logger.info(f"{len(predicts)} predictions made")
 
+    logger.info("Saving predictions ...")
     save_predictions(evaluation_pipeline_params.output_data_path, predicts)
+    logger.info("Predictions saved")
+    logger.info("Evaluation pipeline ended")
 
     return evaluation_pipeline_params.output_data_path
 
