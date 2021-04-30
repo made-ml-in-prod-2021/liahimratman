@@ -3,15 +3,15 @@ import sys
 
 import click
 
-from ml_project.data_functions import read_data
-from ml_project.models.model_fit_predict import save_predictions, load_model
-from ml_project.params.evaluation_pipeline_params import (
+from data_functions import read_data
+from models.model_fit_predict import save_predictions, load_model
+from params.evaluation_pipeline_params import (
     EvaluationPipelineParams,
     read_evaluation_pipeline_params,
 )
-from ml_project.features import make_features
-from ml_project.features.build_features import build_transformers
-from ml_project.models import (
+from features import make_features
+from features.build_features import build_transformers
+from models import (
     predict_model,
 )
 
@@ -56,12 +56,12 @@ def predict_pipeline(evaluation_pipeline_params: EvaluationPipelineParams):
     return evaluation_pipeline_params.output_data_path
 
 
-# @click.command(name="predict_pipeline")
-# @click.argument("config_path")
+@click.command(name="predict_pipeline")
+@click.argument("config_path")
 def evaluation_pipeline_command(config_path: str):
     params = read_evaluation_pipeline_params(config_path)
     predict_pipeline(params)
 
 
 if __name__ == "__main__":
-    evaluation_pipeline_command("configs/evaluation_config.yaml")
+    evaluation_pipeline_command()
