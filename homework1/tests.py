@@ -5,6 +5,8 @@ from typing import List, Tuple
 import pandas as pd
 from py._path.local import LocalPath
 from sklearn.linear_model import LogisticRegression
+from pathlib import Path
+import json
 
 from ml_project.data_functions.make_dataset import read_data, split_train_val_data
 from ml_project.params.split_params import SplittingParams
@@ -13,7 +15,7 @@ from ml_project.params.train_pipeline_params import TrainingPipelineParams
 from ml_project.params.feature_params import FeatureParams
 from ml_project.features.build_features import make_features, extract_target, build_transformers
 from ml_project.models.model_fit_predict import train_model, serialize_model
-
+from train_pipeline import train_pipeline
 
 @pytest.fixture()
 def dataset_path():
@@ -97,24 +99,6 @@ def test_serialize_model(tmpdir: LocalPath):
     with open(real_output, "rb") as f:
         model = pickle.load(f)
     assert isinstance(model, LogisticRegression)
-
-
-
-
-from pathlib import Path
-import json
-from train_pipeline import train_pipeline
-# from typing import List, Callable, OrderedDict
-#
-# import numpy as np
-# import yaml
-#
-# from heart_disease.entities.data_loading_config import DataLoadingConfig
-# from heart_disease.entities.model_config import TrainModelConfig, EvaluateModelConfig, ModelType
-# from heart_disease.entities.pipeline_config import TrainingConfig, PredictConfig
-# from heart_disease.entities.splitting_config import SplittingConfig
-# from heart_disease.models.predict_model import predict
-# from heart_disease.models.train_model import train_pipeline
 
 
 def get_feature_config(
