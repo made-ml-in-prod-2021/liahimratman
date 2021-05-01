@@ -4,7 +4,7 @@ import pickle
 from .feature_params import FeatureParams
 from marshmallow_dataclass import class_schema
 import yaml
-from ml_project.transformers.make_transformers import StandardScalerTransformer
+from hydra.utils import to_absolute_path
 
 
 @dataclass()
@@ -20,10 +20,9 @@ class EvaluationPipelineParams:
 EvaluationPipelineParamsSchema = class_schema(EvaluationPipelineParams)
 
 
-def read_evaluation_pipeline_params(path: str) -> EvaluationPipelineParams:
-    with open(path, "r") as input_stream:
-        schema = EvaluationPipelineParamsSchema()
-        return schema.load(yaml.safe_load(input_stream))
+def read_evaluation_pipeline_params(params: dict) -> EvaluationPipelineParams:
+    schema = EvaluationPipelineParamsSchema()
+    return schema.load(params)
 
 
 def write_evaluation_pipeline_params(output_path: str, path_to_model: str, column_save_path: str,
@@ -41,10 +40,10 @@ def write_evaluation_pipeline_params(output_path: str, path_to_model: str, colum
         }
     }
 
-    with open(column_save_path, 'wb') as output_transformers_stream:
+    with open(to_absolute_path(column_save_path), 'wb') as output_transformers_stream:
         pickle.dump(transformers["column_transformer"], output_transformers_stream)
 
-    with open(scaler_save_path, 'wb') as output_transformers_stream:
+    with open(to_absolute_path(scaler_save_path), 'wb') as output_transformers_stream:
         pickle.dump(transformers["standard_scaler_transformer"], output_transformers_stream)
 
     with open(output_path, "w") as output_stream:

@@ -1,6 +1,7 @@
 import logging
 import sys
-import click
+import hydra
+from hydra.utils import to_absolute_path
 
 from ml_project.data_functions.make_dataset import read_data, split_train_val_data
 from ml_project.models.model_fit_predict import save_metrics, train_model, serialize_model, predict_model, evaluate_model
@@ -19,7 +20,7 @@ def train_pipeline(training_pipeline_params: TrainingPipelineParams):
     logger.info(f"start train pipeline with params {training_pipeline_params}")
 
     logger.info("Reading data ...")
-    data = read_data(training_pipeline_params.input_data_path)
+    data = read_data(to_absolute_path(training_pipeline_params.input_data_path))
     logger.info(f"data.shape is {data.shape}")
 
     logger.info(f"Splitting data ...")
@@ -70,16 +71,16 @@ def train_pipeline(training_pipeline_params: TrainingPipelineParams):
     logger.info(f"Metrics is {metrics}")
 
     logger.info("Saving metrics ...")
-    save_metrics(training_pipeline_params.metric_path, metrics)
+    save_metrics(to_absolute_path(training_pipeline_params.metric_path), metrics)
     logger.info("Metrics saved")
 
     logger.info("Saving model ...")
-    path_to_model = serialize_model(model, training_pipeline_params.output_model_path)
+    path_to_model = serialize_model(model, to_absolute_path(training_pipeline_params.output_model_path))
     logger.info("Model saved")
 
     logger.info("Saving evaluation config ...")
-    eval_config_path = write_evaluation_pipeline_params(output_path=training_pipeline_params.output_config_path,
-                                                        path_to_model=path_to_model,
+    eval_config_path = write_evaluation_pipeline_params(output_path=to_absolute_path(training_pipeline_params.output_config_path),
+                                                        path_to_model=training_pipeline_params.output_model_path,
                                                         column_save_path=training_pipeline_params.column_transformer_save_path,
                                                         scaler_save_path=training_pipeline_params.scaler_transformer_save_path,
                                                         feature_params=training_pipeline_params.feature_params,
@@ -90,12 +91,11 @@ def train_pipeline(training_pipeline_params: TrainingPipelineParams):
     return metrics, eval_config_path
 
 
-@click.command(name="train_pipeline")
-@click.argument("config_path")
-def train_pipeline_command(config_path: str):
-    params = read_training_pipeline_params(config_path)
+@hydra.main(config_path="configs", config_name="train_config")
+def train_app(cfg) -> None:
+    params = read_training_pipeline_params(cfg)
     train_pipeline(params)
 
 
 if __name__ == "__main__":
-    train_pipeline_command()
+    train_app()
