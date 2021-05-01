@@ -17,6 +17,7 @@ setup(
         "scikit-learn==0.24.2",
         "scipy==1.6.3",
         "pytest==6.2.3",
+        "Faker==8.1.2",
     ],
     license="MIT",
 )
