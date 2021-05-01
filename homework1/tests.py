@@ -7,6 +7,7 @@ from py._path.local import LocalPath
 from sklearn.linear_model import LogisticRegression
 from pathlib import Path
 import json
+from faker import Faker
 
 from ml_project.data_functions.make_dataset import read_data, split_train_val_data
 from ml_project.params.split_params import SplittingParams
@@ -17,9 +18,15 @@ from ml_project.features.build_features import make_features, extract_target, bu
 from ml_project.models.model_fit_predict import train_model, serialize_model
 from train_pipeline import train_pipeline
 
+
 @pytest.fixture()
 def dataset_path():
     return "tests_data/train_data_sample.csv"
+
+
+@pytest.fixture()
+def fake_dataset_path():
+    return "tests_data/fake_dataset.csv"
 
 
 @pytest.fixture()
@@ -152,6 +159,52 @@ def test_train_pipeline(
         target_col: str
 ):
     metrics_path, model_save_path = train_tmp_model(categorical_features, dataset_path,
+                                                                    numerical_features, target_col,
+                                                                    tmpdir)
+    assert Path(model_save_path).exists()
+    assert Path(metrics_path).exists()
+    with open(metrics_path, "r") as f:
+        metric_values = json.load(f)
+        assert metric_values["accuracy"] > 0
+        assert metric_values["f1"] > 0
+        assert metric_values["precision"] > 0
+        assert metric_values["recall"] > 0
+
+
+def make_fake_dataset():
+    fake = Faker()
+    fake.set_arguments('age', {'min_value': 1, 'max_value': 100})
+    fake.set_arguments('trestbps', {'min_value': 80, 'max_value': 200})
+    fake.set_arguments('chol', {'min_value': 120, 'max_value': 600})
+    fake.set_arguments('restecg_slope', {'min_value': 0, 'max_value': 2})
+    fake.set_arguments('thalach', {'min_value': 70, 'max_value': 210})
+    fake.set_arguments('oldpeak', {'min_value': 0, 'max_value': 7})
+    fake.set_arguments('ca', {'min_value': 0, 'max_value': 4})
+    fake.set_arguments('thal_cp', {'min_value': 0, 'max_value': 3})
+    fake.set_arguments('binary', {'min_value': 0, 'max_value': 1})
+    fake_data = fake.csv(
+        header=("age", "trestbps", "chol", "fbs", "restecg", "thalach", "exang", "oldpeak", "slope", "ca",
+                "thal", "cp", "sex", "target"),
+        data_columns=('{{pyint:age}}', '{{pyint:trestbps}}', '{{pyint:chol}}', '{{pyint:binary}}',
+                      '{{pyint:restecg_slope}}', '{{pyint:thalach}}', '{{pyint:binary}}',
+                      '{{pyfloat:oldpeak}}', '{{pyint:restecg_slope}}', '{{pyint:ca}}',
+                      '{{pyint:thal_cp}}', '{{pyint:thal_cp}}', '{{pyint:binary}}', '{{pyint:binary}}'),
+        num_rows=100,
+        include_row_ids=False).replace('\r', '')
+
+    with open('tests_data/fake_dataset.csv', 'w') as input_stream:
+        input_stream.write(fake_data)
+
+
+def test_train_pipeline_on_fake_dataset(
+        tmpdir: Path,
+        fake_dataset_path: str,
+        categorical_features: List[str],
+        numerical_features: List[str],
+        target_col: str
+):
+    make_fake_dataset()
+    metrics_path, model_save_path = train_tmp_model(categorical_features, fake_dataset_path,
                                                                     numerical_features, target_col,
                                                                     tmpdir)
     assert Path(model_save_path).exists()
