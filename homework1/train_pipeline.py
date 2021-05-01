@@ -51,7 +51,6 @@ def train_pipeline(training_pipeline_params: TrainingPipelineParams):
     val_features, _ = make_features(transformers, val_df, mode="val")
     logger.info(f"val_features.shape is {val_features.shape}")
 
-
     logger.info("Extracting validation target ...")
     val_target = extract_target(val_df, training_pipeline_params.feature_params)
     logger.info("Validation target extracted")
@@ -81,8 +80,10 @@ def train_pipeline(training_pipeline_params: TrainingPipelineParams):
     logger.info("Saving evaluation config ...")
     eval_config_path = write_evaluation_pipeline_params(output_path=training_pipeline_params.output_config_path,
                                                         path_to_model=path_to_model,
+                                                        column_save_path=training_pipeline_params.column_transformer_save_path,
+                                                        scaler_save_path=training_pipeline_params.scaler_transformer_save_path,
                                                         feature_params=training_pipeline_params.feature_params,
-                                                        scaler=transformers["standard_scaler_transformer"])
+                                                        transformers=transformers)
     logger.info("Evaluation config saved")
     logger.info("Training pipeline ended")
 

@@ -8,6 +8,7 @@ from ml_project.models.model_fit_predict import save_predictions, load_model
 from ml_project.params.evaluation_pipeline_params import (
     EvaluationPipelineParams,
     read_evaluation_pipeline_params,
+    load_saved_transformers,
 )
 
 from ml_project.features.build_features import build_transformers, make_features
@@ -27,12 +28,12 @@ def predict_pipeline(evaluation_pipeline_params: EvaluationPipelineParams):
     logger.info(f"Input data shape is {data.shape}")
 
     logger.info("Building transformers ...")
-    transformers = build_transformers(evaluation_pipeline_params.feature_params)
+    transformers = load_saved_transformers(column_transformer_save_path=evaluation_pipeline_params.column_transformer_save_path,
+                                           scaler_transformer_save_path=evaluation_pipeline_params.scaler_transformer_save_path)
     logger.info("Transformers built")
 
     logger.info("Making features ...")
-    eval_features, _ = make_features(transformers, data, mode="eval",
-                                  scaler_params=evaluation_pipeline_params.scaler_params)
+    eval_features, _ = make_features(transformers, data, mode="val")
     logger.info(f"Features shape is {eval_features.shape}")
 
     logger.info("Loading model ...")

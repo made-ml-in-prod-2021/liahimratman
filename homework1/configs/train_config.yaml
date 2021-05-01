@@ -1,7 +1,9 @@
 input_data_path: ml_project/data/heart.csv
 output_model_path: ml_project/models/model.pkl
-output_config_path: configs/evaluation_config.yaml
 metric_path: ml_project/models/metrics.json
+column_transformer_save_path: ml_project/models/custom_column_transformers.pkl
+scaler_transformer_save_path: ml_project/models/custom_scaler_transformers.pkl
+output_config_path: configs/evaluation_config.yaml
 splitting_params:
   val_size: 0.2
   random_state: 4

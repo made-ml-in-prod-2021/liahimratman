@@ -36,17 +36,17 @@ def build_numerical_pipeline() -> Pipeline:
     return num_pipeline
 
 
-def make_features(transformers: dict, df: pd.DataFrame, mode="val", scaler_params=None) -> pd.DataFrame:
-    if mode in ["train", "eval"]:
+def make_features(transformers: dict, df: pd.DataFrame, mode="val") -> pd.DataFrame:
+    if mode in ["train"]:
         transformers["column_transformer"].fit(df)
     df = pd.DataFrame(transformers["column_transformer"].transform(df))
 
     if mode == "train":
         transformers["standard_scaler_transformer"].fit(df)
-    elif mode == "eval":
-        precomputed_means = list(map(float, scaler_params.mean))
-        precomputed_scales = list(map(float, scaler_params.scale))
-        transformers["standard_scaler_transformer"].fit(df, precomputed_means, precomputed_scales)
+    # elif mode == "eval":
+    #     precomputed_means = list(map(float, scaler_params.mean))
+    #     precomputed_scales = list(map(float, scaler_params.scale))
+    #     transformers["standard_scaler_transformer"].fit(df, precomputed_means, precomputed_scales)
 
     return pd.DataFrame(transformers["standard_scaler_transformer"].transform(df)), transformers
 
