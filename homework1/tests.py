@@ -129,6 +129,8 @@ def train_tmp_model(
         tmpdir: Path
 ):
     model_save_path = str(tmpdir / "model.pkl")
+    columns_transformer_save_path = str(tmpdir / "columns.pkl")
+    scaler_transformer_save_path = str(tmpdir / "scaler.pkl")
     metrics_path = str(tmpdir / "metrics.json")
     output_config_path = str(tmpdir / "out_config.yaml")
     feature_config = get_feature_config(target_col, categorical_features, numerical_features)
@@ -146,6 +148,8 @@ def train_tmp_model(
         output_model_path=model_save_path,
         output_config_path=output_config_path,
         metric_path=metrics_path,
+        column_transformer_save_path=columns_transformer_save_path,
+        scaler_transformer_save_path=scaler_transformer_save_path,
     )
     train_pipeline(config)
     return metrics_path, model_save_path
