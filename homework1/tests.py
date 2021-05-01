@@ -171,7 +171,7 @@ def test_train_pipeline(
         assert metric_values["recall"] > 0
 
 
-def make_fake_dataset():
+def make_fake_dataset(path):
     fake = Faker()
     fake.set_arguments('age', {'min_value': 1, 'max_value': 100})
     fake.set_arguments('trestbps', {'min_value': 80, 'max_value': 200})
@@ -192,7 +192,7 @@ def make_fake_dataset():
         num_rows=100,
         include_row_ids=False).replace('\r', '')
 
-    with open('tests_data/fake_dataset.csv', 'w') as input_stream:
+    with open(path, 'w') as input_stream:
         input_stream.write(fake_data)
 
 
@@ -203,7 +203,7 @@ def test_train_pipeline_on_fake_dataset(
         numerical_features: List[str],
         target_col: str
 ):
-    make_fake_dataset()
+    make_fake_dataset(fake_dataset_path)
     metrics_path, model_save_path = train_tmp_model(categorical_features, fake_dataset_path,
                                                                     numerical_features, target_col,
                                                                     tmpdir)
@@ -215,3 +215,22 @@ def test_train_pipeline_on_fake_dataset(
         assert metric_values["f1"] > 0
         assert metric_values["precision"] > 0
         assert metric_values["recall"] > 0
+
+
+def test_transformers(
+    fake_dataset_path: str, categorical_features: List[str], numerical_features: List[str]
+):
+    params = FeatureParams(
+        categorical_features=categorical_features,
+        numerical_features=numerical_features,
+        target_col="target",
+    )
+    make_fake_dataset(fake_dataset_path)
+    data = read_data(fake_dataset_path)
+    transformers = build_transformers(params)
+    features, _ = make_features(transformers, data, mode="train")
+
+    assert features.values.mean(axis=0).max() < 1e-9
+    assert features.values.mean(axis=0).min() > -1e-9
+    assert features.values.std(axis=0).max() < 1 + 1e-9
+    assert features.values.std(axis=0).min() > 1 - 1e-9
