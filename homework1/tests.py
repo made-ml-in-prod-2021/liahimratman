@@ -93,7 +93,9 @@ def features_and_target(
 
 def test_train_model(features_and_target: Tuple[pd.DataFrame, pd.Series]):
     features, target = features_and_target
-    model = train_model(features, target, train_params=TrainingParams(model_type="LogisticRegression"))
+    model = train_model(features, target, train_params=TrainingParams(model_type="LogisticRegression",
+                                                                      random_state=4,
+                                                                      max_iter=1000))
     assert isinstance(model, LogisticRegression)
     assert model.predict(features).shape[0] == target.shape[0]
 
@@ -145,6 +147,7 @@ def train_tmp_model(
         train_params=TrainingParams(
             model_type="LogisticRegression",
             random_state=4,
+            max_iter=1000,
         ),
         input_data_path=dataset_path,
         output_model_path=model_save_path,
