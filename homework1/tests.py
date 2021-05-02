@@ -7,6 +7,7 @@ from py._path.local import LocalPath
 from sklearn.linear_model import LogisticRegression
 from pathlib import Path
 from faker import Faker
+from hydra import to_absolute_path
 import pytest
 
 from ml_project.data_functions.make_dataset import read_data, split_train_val_data
@@ -21,12 +22,12 @@ from train_pipeline import train_pipeline
 
 @pytest.fixture()
 def dataset_path():
-    return "tests_data/train_data_sample.csv"
+    return to_absolute_path("tests_data/train_data_sample.csv")
 
 
 @pytest.fixture()
 def fake_dataset_path():
-    return "tests_data/fake_dataset.csv"
+    return to_absolute_path("tests_data/fake_dataset.csv")
 
 
 @pytest.fixture()
