@@ -1,6 +1,8 @@
 name: Pylint
 
-on: [push]
+on:
+  push:
+    branches: [ homework1 ]
 
 jobs:
   build:
