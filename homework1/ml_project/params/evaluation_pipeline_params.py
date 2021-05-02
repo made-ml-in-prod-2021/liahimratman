@@ -1,10 +1,10 @@
 from dataclasses import dataclass
 import pickle
-
-from .feature_params import FeatureParams
-from marshmallow_dataclass import class_schema
 import yaml
 from hydra.utils import to_absolute_path
+from marshmallow_dataclass import class_schema
+
+from .feature_params import FeatureParams
 
 
 @dataclass()
@@ -53,10 +53,10 @@ def write_evaluation_pipeline_params(output_path: str, path_to_model: str, colum
 
 
 def load_saved_transformers(column_transformer_save_path: str, scaler_transformer_save_path: str):
-    with open(column_transformer_save_path, 'rb') as f:
-        column_transformer = pickle.load(f)
-    with open(scaler_transformer_save_path, 'rb') as f:
-        scaler_transformer = pickle.load(f)
+    with open(column_transformer_save_path, 'rb') as output_stream:
+        column_transformer = pickle.load(output_stream)
+    with open(scaler_transformer_save_path, 'rb') as output_stream:
+        scaler_transformer = pickle.load(output_stream)
     transformers = {
         "column_transformer": column_transformer,
         "standard_scaler_transformer": scaler_transformer,

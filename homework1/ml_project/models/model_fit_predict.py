@@ -6,7 +6,8 @@ import pandas as pd
 
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.linear_model import LogisticRegression
-from sklearn.metrics import accuracy_score, precision_score, recall_score, jaccard_score, f1_score, roc_auc_score
+from sklearn.metrics import accuracy_score, precision_score, \
+    recall_score, jaccard_score, f1_score, roc_auc_score
 from ml_project.params.train_params import TrainingParams
 
 
@@ -18,10 +19,14 @@ def train_model(
 ) -> SklearnClassificationModel:
     if train_params.model_type == "RandomForestClassifier":
         model = RandomForestClassifier(
-            n_estimators=100, random_state=train_params.random_state
+            n_estimators=100,
+            random_state=train_params.random_state
         )
     elif train_params.model_type == "LogisticRegression":
-        model = LogisticRegression(max_iter=train_params.max_iter, random_state=train_params.random_state)
+        model = LogisticRegression(
+            max_iter=train_params.max_iter,
+            random_state=train_params.random_state
+        )
     else:
         raise NotImplementedError()
     model.fit(features, target)
@@ -52,8 +57,8 @@ def evaluate_model(
 
 
 def serialize_model(model: SklearnClassificationModel, output: str) -> str:
-    with open(output, "wb") as f:
-        pickle.dump(model, f)
+    with open(output, "wb") as output_stream:
+        pickle.dump(model, output_stream)
 
     return output
 

@@ -31,27 +31,25 @@ def process_numerical_features(numerical_df: pd.DataFrame) -> pd.DataFrame:
 
 def build_numerical_pipeline() -> Pipeline:
     num_pipeline = Pipeline(
-        [("impute", SimpleImputer(missing_values=np.nan, strategy="mean")),]
+        [("impute", SimpleImputer(missing_values=np.nan, strategy="mean")), ]
     )
     return num_pipeline
 
 
-def make_features(transformers: dict, df: pd.DataFrame, mode="val") -> pd.DataFrame:
+def make_features(transformers: dict, data: pd.DataFrame, mode="val") -> pd.DataFrame:
     if mode in ["train"]:
-        transformers["column_transformer"].fit(df)
-    df = pd.DataFrame(transformers["column_transformer"].transform(df))
+        transformers["column_transformer"].fit(data)
+
+    data = pd.DataFrame(transformers["column_transformer"].transform(data))
 
     if mode == "train":
-        transformers["standard_scaler_transformer"].fit(df)
-    # elif mode == "eval":
-    #     precomputed_means = list(map(float, scaler_params.mean))
-    #     precomputed_scales = list(map(float, scaler_params.scale))
-    #     transformers["standard_scaler_transformer"].fit(df, precomputed_means, precomputed_scales)
+        transformers["standard_scaler_transformer"].fit(data)
 
-    return pd.DataFrame(transformers["standard_scaler_transformer"].transform(df)), transformers
+    return pd.DataFrame(transformers["standard_scaler_transformer"].transform(data)), transformers
 
 
-def build_transformers(params: FeatureParams) -> {str: ColumnTransformer, str: StandardScalerTransformer}:
+def build_transformers(params: FeatureParams) -> {str: ColumnTransformer,
+                                                  str: StandardScalerTransformer}:
     column_transformer = ColumnTransformer(
         [
             (
@@ -76,6 +74,7 @@ def build_transformers(params: FeatureParams) -> {str: ColumnTransformer, str: S
     return transformers
 
 
-def extract_target(df: pd.DataFrame, params: FeatureParams) -> pd.Series:
-    target = df[params.target_col]
+def extract_target(data: pd.DataFrame, params: FeatureParams) -> pd.Series:
+    target = data[params.target_col]
+
     return target
