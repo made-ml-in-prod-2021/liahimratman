@@ -22,5 +22,10 @@ TrainingPipelineParamsSchema = class_schema(TrainingPipelineParams)
 
 
 def read_training_pipeline_params(params) -> TrainingPipelineParams:
+    """
+    Reading training pipeline parameters.
+    :param params: Dict with train pipeline parameters
+    :return: TrainingPipelineParams
+    """
     schema = TrainingPipelineParamsSchema()
     return schema.load(params)

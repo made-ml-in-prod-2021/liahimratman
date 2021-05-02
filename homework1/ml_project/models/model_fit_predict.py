@@ -17,6 +17,13 @@ SklearnClassificationModel = Union[RandomForestClassifier, LogisticRegression]
 def train_model(
     features: pd.DataFrame, target: pd.Series, train_params: TrainingParams
 ) -> SklearnClassificationModel:
+    """
+    Train model
+    :param features: preprocessed data
+    :param target: targets
+    :param train_params: training parameters
+    :return: SklearnClassificationModel
+    """
     if train_params.model_type == "RandomForestClassifier":
         model = RandomForestClassifier(
             n_estimators=100,
@@ -37,6 +44,12 @@ def train_model(
 def predict_model(
         model: SklearnClassificationModel, features: pd.DataFrame
 ) -> np.ndarray:
+    """
+    Make predictions
+    :param model: SklearnClassificationModel
+    :param features: preprocessed data
+    :return: predictions (np.ndarray)
+    """
     predicts = model.predict(features)
 
     return predicts
@@ -45,6 +58,12 @@ def predict_model(
 def evaluate_model(
     predicts: np.ndarray, target: pd.Series
 ) -> Dict[str, float]:
+    """
+    Evaluate model metrics (Accuracy, Precision, Recall, Jaccard, f1, ROC_AUC_SCORE)
+    :param predicts: predictions
+    :param target: targets
+    :return: Dict[str, float]
+    """
 
     return {
         "accuracy": accuracy_score(target, predicts),
@@ -57,6 +76,12 @@ def evaluate_model(
 
 
 def serialize_model(model: SklearnClassificationModel, output: str) -> str:
+    """
+    Save model
+    :param model: SklearnClassificationModel
+    :param output: output path
+    :return: output path
+    """
     with open(output, "wb") as output_stream:
         pickle.dump(model, output_stream)
 
@@ -64,6 +89,11 @@ def serialize_model(model: SklearnClassificationModel, output: str) -> str:
 
 
 def load_model(input_model_path: str) -> SklearnClassificationModel:
+    """
+    Load model
+    :param input_model_path: saved model path
+    :return: SklearnClassificationModel
+    """
     with open(input_model_path, 'rb') as input_stream:
         model = pickle.load(input_stream)
 
@@ -71,12 +101,24 @@ def load_model(input_model_path: str) -> SklearnClassificationModel:
 
 
 def save_predictions(output_data_path: str, predicts: list) -> str:
+    """
+    Saved model predictions
+    :param output_data_path: predictions path
+    :param predicts: predictions
+    :return: predictions path
+    """
     pd.DataFrame(predicts, columns=['target']).to_csv(output_data_path, index_label='index')
 
     return output_data_path
 
 
 def save_metrics(metric_path: str, metrics: dict) -> str:
+    """
+    Save model training and validation metrics
+    :param metric_path: metrics path
+    :param metrics: metrics
+    :return: metrics path
+    """
     with open(metric_path, "w") as metric_file:
         json.dump(metrics, metric_file)
 
