@@ -26,7 +26,8 @@ def predict_pipeline(evaluation_pipeline_params: EvaluationPipelineParams):
     :param evaluation_pipeline_params: parameters of feature extraction and model evaluation
     :return: None
     """
-    logger.info(f"start evaluation pipeline with params {evaluation_pipeline_params}")
+    logger.info("Start evaluation pipeline with params:")
+    logger.info(evaluation_pipeline_params)
 
     logger.info("Reading data ...")
     data = read_data(to_absolute_path(evaluation_pipeline_params.input_data_path))

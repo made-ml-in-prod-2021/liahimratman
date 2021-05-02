@@ -21,7 +21,8 @@ logger.addHandler(handler)
 def train_pipeline(training_pipeline_params: TrainingPipelineParams):
     """
     Training pipeline.
-    :param training_pipeline_params: parameters of feature extraction, splitting, training and saving
+    :param training_pipeline_params:
+    parameters of feature extraction, splitting, training and saving
     :return: None
     """
     logger.info("Start train pipeline. Pipeline params:")
