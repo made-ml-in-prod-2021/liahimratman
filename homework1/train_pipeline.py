@@ -91,11 +91,11 @@ def train_pipeline(training_pipeline_params: TrainingPipelineParams):
 
     logger.info("Saving model ...")
     serialize_model(model,
-                                    to_absolute_path(training_pipeline_params.output_model_path))
+                    to_absolute_path(training_pipeline_params.output_model_path))
     logger.info("Model saved")
 
     logger.info("Saving evaluation config ...")
-    eval_config_path = write_evaluation_pipeline_params(
+    write_evaluation_pipeline_params(
         output_path=to_absolute_path(training_pipeline_params.output_config_path),
         path_to_model=training_pipeline_params.output_model_path,
         column_save_path=training_pipeline_params.column_transformer_save_path,
@@ -105,8 +105,6 @@ def train_pipeline(training_pipeline_params: TrainingPipelineParams):
     )
     logger.info("Evaluation config saved")
     logger.info("Training pipeline ended")
-
-    return metrics, eval_config_path
 
 
 @hydra.main()
