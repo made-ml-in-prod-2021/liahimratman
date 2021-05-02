@@ -7,7 +7,7 @@ from py._path.local import LocalPath
 from sklearn.linear_model import LogisticRegression
 from pathlib import Path
 from faker import Faker
-from hydra import to_absolute_path
+from hydra.utils import to_absolute_path
 import pytest
 
 from ml_project.data_functions.make_dataset import read_data, split_train_val_data
