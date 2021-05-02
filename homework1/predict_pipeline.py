@@ -57,7 +57,7 @@ def predict_pipeline(evaluation_pipeline_params: EvaluationPipelineParams):
     return evaluation_pipeline_params.output_data_path
 
 
-@hydra.main(config_path="configs", config_name="evaluation_config")
+@hydra.main()
 def predict_app(cfg) -> None:
     params = read_evaluation_pipeline_params(cfg)
     predict_pipeline(params)

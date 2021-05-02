@@ -91,7 +91,7 @@ def train_pipeline(training_pipeline_params: TrainingPipelineParams):
     return metrics, eval_config_path
 
 
-@hydra.main(config_path="configs", config_name="train_config")
+@hydra.main()
 def train_app(cfg) -> None:
     params = read_training_pipeline_params(cfg)
     train_pipeline(params)

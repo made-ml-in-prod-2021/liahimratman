@@ -1,8 +1,9 @@
 from dataclasses import dataclass, field
+from typing import Optional
 
 
 @dataclass()
 class TrainingParams:
+    max_iter: Optional[int]
+    random_state: Optional[int]
     model_type: str = field(default="LinearRegression")
-    max_iter: int = field(default=1000)
-    random_state: int = field(default=100)
