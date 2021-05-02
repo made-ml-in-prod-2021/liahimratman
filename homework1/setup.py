@@ -18,6 +18,8 @@ setup(
         "scipy==1.6.3",
         "pytest==6.2.3",
         "Faker==8.1.2",
+        "hydra-core==1.0.6",
+        "pylint=2.8.2",
     ],
     license="MIT",
 )
