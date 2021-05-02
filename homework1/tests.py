@@ -1,13 +1,13 @@
 import os
-import pytest
 import pickle
-from typing import List, Tuple
+import json
 import pandas as pd
+from typing import List, Tuple
 from py._path.local import LocalPath
 from sklearn.linear_model import LogisticRegression
 from pathlib import Path
-import json
 from faker import Faker
+import pytest
 
 from ml_project.data_functions.make_dataset import read_data, split_train_val_data
 from ml_project.params.split_params import SplittingParams
@@ -87,6 +87,7 @@ def features_and_target(
     transformers = build_transformers(params)
     features, _ = make_features(transformers, data, mode="train")
     target = extract_target(data, params)
+
     return features, target
 
 
@@ -103,8 +104,8 @@ def test_serialize_model(tmpdir: LocalPath):
     real_output = serialize_model(model, expected_output)
     assert real_output == expected_output
     assert os.path.exists
-    with open(real_output, "rb") as f:
-        model = pickle.load(f)
+    with open(real_output, "rb") as output_stream:
+        model = pickle.load(output_stream)
     assert isinstance(model, LogisticRegression)
 
 
@@ -118,6 +119,7 @@ def get_feature_config(
         numerical_features=numerical_features,
         categorical_features=categorical_features,
     )
+
     return config
 
 
@@ -152,6 +154,7 @@ def train_tmp_model(
         scaler_transformer_save_path=scaler_transformer_save_path,
     )
     train_pipeline(config)
+
     return metrics_path, model_save_path
 
 
@@ -167,8 +170,8 @@ def test_train_pipeline(
                                                                     tmpdir)
     assert Path(model_save_path).exists()
     assert Path(metrics_path).exists()
-    with open(metrics_path, "r") as f:
-        metric_values = json.load(f)
+    with open(metrics_path, "r") as input_stream:
+        metric_values = json.load(input_stream)
         assert metric_values["accuracy"] > 0
         assert metric_values["f1"] > 0
         assert metric_values["precision"] > 0
@@ -213,8 +216,8 @@ def test_train_pipeline_on_fake_dataset(
                                                                     tmpdir)
     assert Path(model_save_path).exists()
     assert Path(metrics_path).exists()
-    with open(metrics_path, "r") as f:
-        metric_values = json.load(f)
+    with open(metrics_path, "r") as input_stream:
+        metric_values = json.load(input_stream)
         assert metric_values["accuracy"] > 0
         assert metric_values["f1"] > 0
         assert metric_values["precision"] > 0
