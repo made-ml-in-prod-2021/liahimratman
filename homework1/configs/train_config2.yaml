@@ -1,0 +1,28 @@
+input_data_path: ml_project/data/heart.csv
+output_model_path: ml_project/models/model.pkl
+metric_path: ml_project/models/metrics.json
+column_transformer_save_path: ml_project/models/custom_column_transformers.pkl
+scaler_transformer_save_path: ml_project/models/custom_scaler_transformers.pkl
+output_config_path: configs/evaluation_config.yaml
+splitting_params:
+  val_size: 0.3
+  random_state: 8
+train_params:
+  model_type: "RandomForestClassifier"
+feature_params:
+  numerical_features:
+    - "age"
+    - "trestbps"
+    - "chol"
+    - "fbs"
+    - "restecg"
+    - "thalach"
+    - "exang"
+    - "oldpeak"
+    - "slope"
+    - "ca"
+    - "thal"
+  categorical_features:
+    - "cp"
+    - "sex"
+  target_col: "target"

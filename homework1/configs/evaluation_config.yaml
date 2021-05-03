@@ -1,0 +1,21 @@
+column_transformer_save_path: ml_project/models/custom_column_transformers.pkl
+feature_params:
+  categorical_features:
+  - cp
+  - sex
+  numerical_features:
+  - age
+  - trestbps
+  - chol
+  - fbs
+  - restecg
+  - thalach
+  - exang
+  - oldpeak
+  - slope
+  - ca
+  - thal
+input_data_path: ml_project/data/heart.csv
+input_model_path: ml_project/models/model.pkl
+output_data_path: output_data/predicted.csv
+scaler_transformer_save_path: ml_project/models/custom_scaler_transformers.pkl
