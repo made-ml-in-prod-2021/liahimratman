@@ -3,6 +3,8 @@ name: Pytest
 on:
   push:
     branches: [ homework1 ]
+  pull_request:
+    branches: [ homework1 ]
 
 jobs:
   build:
