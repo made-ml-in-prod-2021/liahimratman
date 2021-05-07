@@ -9,7 +9,7 @@ from sklearn.linear_model import LogisticRegression
 from faker import Faker
 import pytest
 
-from ml_project.data_functions.make_dataset import read_data, split_train_val_data
+from ml_project.data_functions.make_dataset import split_train_val_data
 from ml_project.params.split_params import SplittingParams
 from ml_project.params.train_params import TrainingParams
 from ml_project.params.train_pipeline_params import TrainingPipelineParams
@@ -39,6 +39,12 @@ def categorical_features() -> List[str]:
     return [
         "cp",
         "sex",
+        "fbs",
+        "restecg",
+        "exang",
+        "slope",
+        "ca",
+        "thal",
     ]
 
 
@@ -48,14 +54,8 @@ def numerical_features() -> List[str]:
         "age",
         "trestbps",
         "chol",
-        "fbs",
-        "restecg",
         "thalach",
-        "exang",
         "oldpeak",
-        "slope",
-        "ca",
-        "thal",
     ]
 
 
@@ -66,7 +66,7 @@ def test_load_dataset(dataset_path: str, target_col: str):
     :param target_col: target
     :return: None
     """
-    data = read_data(dataset_path)
+    data = pd.read_csv(dataset_path)
     assert len(data) > 10
     assert target_col in data.keys()
 
@@ -79,7 +79,7 @@ def test_split_dataset(dataset_path: str):
     """
     val_size = 0.2
     splitting_params = SplittingParams(random_state=239, val_size=val_size,)
-    data = read_data(dataset_path)
+    data = pd.read_csv(dataset_path)
     train, val = split_train_val_data(data, splitting_params)
     assert train.shape[0] > 10
     assert val.shape[0] > 10
@@ -101,7 +101,7 @@ def features_and_target(
         numerical_features=numerical_features,
         target_col="target",
     )
-    data = read_data(dataset_path)
+    data = pd.read_csv(dataset_path)
     transformers = build_transformers(params)
     features, _ = make_features(transformers, data, mode="train")
     target = extract_target(data, params)
@@ -312,7 +312,7 @@ def test_transformers(
         target_col="target",
     )
     make_fake_dataset(fake_dataset_path)
-    data = read_data(fake_dataset_path)
+    data = pd.read_csv(fake_dataset_path)
     transformers = build_transformers(params)
     features, _ = make_features(transformers, data, mode="train")
 

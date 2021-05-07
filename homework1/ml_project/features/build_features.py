@@ -27,7 +27,7 @@ def build_categorical_pipeline() -> Pipeline:
     categorical_pipeline = Pipeline(
         [
             ("impute", SimpleImputer(missing_values=np.nan, strategy="most_frequent")),
-            ("ohe", OneHotEncoder()),
+            ("ohe", OneHotEncoder(sparse=False)),
         ]
     )
     return categorical_pipeline
@@ -54,7 +54,7 @@ def build_numerical_pipeline() -> Pipeline:
     return num_pipeline
 
 
-def make_features(transformers: dict, data: pd.DataFrame, mode="val") -> pd.DataFrame:
+def make_features(transformers: dict, data: pd.DataFrame, mode="val") -> (pd.DataFrame, dict):
     """
     Make features
     :param transformers: Dict with column transformer and custom standard scaler transformer
@@ -62,7 +62,7 @@ def make_features(transformers: dict, data: pd.DataFrame, mode="val") -> pd.Data
     :param mode: processing mode
     :return: pd.DataFrame (preprocessed data)
     """
-    if mode in ["train"]:
+    if mode == "train":
         transformers["column_transformer"].fit(data)
 
     data = pd.DataFrame(transformers["column_transformer"].transform(data))

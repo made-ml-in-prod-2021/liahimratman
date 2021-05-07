@@ -46,7 +46,7 @@ def write_evaluation_pipeline_params(output_path: str, path_to_model: str, colum
     """
     eval_config = {
         "input_data_path": None,
-        "output_data_path": "output_data/predicted.csv",
+        "output_data_path": "ml_project/output_data/predicted.csv",
         "input_model_path": path_to_model,
         "column_transformer_save_path": column_save_path,
         "scaler_transformer_save_path": scaler_save_path,

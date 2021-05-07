@@ -1,9 +1,10 @@
 import logging
 import sys
+import pandas as pd
 import hydra
 from hydra.utils import to_absolute_path
 
-from ml_project.data_functions.make_dataset import read_data, split_train_val_data
+from ml_project.data_functions.make_dataset import split_train_val_data
 from ml_project.models.model_fit_predict import save_metrics, train_model, \
     serialize_model, predict_model, evaluate_model
 from ml_project.params.evaluation_pipeline_params import write_evaluation_pipeline_params
@@ -29,7 +30,7 @@ def train_pipeline(training_pipeline_params: TrainingPipelineParams):
     logger.info(training_pipeline_params)
 
     logger.info("Reading data ...")
-    data = read_data(to_absolute_path(training_pipeline_params.input_data_path))
+    data = pd.read_csv(to_absolute_path(training_pipeline_params.input_data_path))
     logger.info("Data shape:")
     logger.info(data.shape)
 

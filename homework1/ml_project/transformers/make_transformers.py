@@ -85,7 +85,7 @@ class StandardScalerTransformer(TransformerMixin, BaseEstimator):
 
         return self
 
-    def transform(self, data, copy=None):
+    def transform(self, data, copy=False):
         """
         Transform data
         :param data: data
@@ -94,7 +94,7 @@ class StandardScalerTransformer(TransformerMixin, BaseEstimator):
         """
         check_is_fitted(self)
 
-        copy = copy if copy is not None else self.copy
+        copy = copy if not copy else self.copy
         data = self._validate_data(data, copy=copy, reset=False,
                                    estimator=self, dtype=FLOAT_DTYPES,
                                    force_all_finite='allow-nan')

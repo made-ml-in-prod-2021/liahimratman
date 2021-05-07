@@ -11,18 +11,18 @@ train_params:
   model_type: "RandomForestClassifier"
 feature_params:
   numerical_features:
-    - "age"
-    - "trestbps"
-    - "chol"
-    - "fbs"
-    - "restecg"
-    - "thalach"
-    - "exang"
-    - "oldpeak"
-    - "slope"
-    - "ca"
-    - "thal"
+    - age
+    - trestbps
+    - chol
+    - thalach
+    - oldpeak
   categorical_features:
-    - "cp"
-    - "sex"
-  target_col: "target"
+    - cp
+    - sex
+    - fbs
+    - restecg
+    - exang
+    - slope
+    - ca
+    - thal
+  target_col: target
