@@ -30,6 +30,9 @@ Config2
 Аналогично, переходим в homework1:
 `cd homework1`
 
+Используется FastApi, если без докера, то поднять можно так:
+`uvicorn api:app --port 8000`
+
 Собрать образ самостоятельно можно с помощью:
 `docker build -t frantotti/ml_project_made:v1 .`
 
