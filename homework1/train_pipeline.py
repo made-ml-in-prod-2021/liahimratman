@@ -30,7 +30,10 @@ def train_pipeline(training_pipeline_params: TrainingPipelineParams):
     logger.info(training_pipeline_params)
 
     logger.info("Reading data ...")
-    data = pd.read_csv(to_absolute_path(training_pipeline_params.input_data_path))
+    data = pd.read_csv(to_absolute_path(training_pipeline_params.input_data_path
+                                        ))[training_pipeline_params.feature_params.categorical_features +
+                                           training_pipeline_params.feature_params.numerical_features +
+                                           [training_pipeline_params.feature_params.target_col]]
     logger.info("Data shape:")
     logger.info(data.shape)
 
