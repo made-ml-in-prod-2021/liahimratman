@@ -48,7 +48,7 @@ def categorical_features() -> List[str]:
     ]
 
 
-@pytest.fixture
+@pytest.fixture()
 def numerical_features() -> List[str]:
     return [
         "age",
@@ -235,10 +235,11 @@ def test_train_pipeline(
         assert metric_values["recall"] > 0
 
 
-def make_fake_dataset(path):
+@pytest.fixture()
+def make_fake_dataset(fake_dataset_path: str):
     """
     Make and save fake dataset
-    :param path: saving path
+    :param fake_dataset_path: fake dataset saving path
     :return: None
     """
     fake = Faker()
@@ -262,13 +263,15 @@ def make_fake_dataset(path):
         num_rows=100,
         include_row_ids=False).replace('\r', '')
 
-    with open(path, 'w') as input_stream:
+    with open(fake_dataset_path, 'w') as input_stream:
         input_stream.write(fake_data)
+
+    return fake_dataset_path
 
 
 def test_train_pipeline_on_fake_dataset(
         tmpdir: Path,
-        fake_dataset_path: str,
+        make_fake_dataset: str,
         categorical_features: List[str],
         numerical_features: List[str],
         target_col: str
@@ -276,14 +279,13 @@ def test_train_pipeline_on_fake_dataset(
     """
     Test ful pipeline on fake dataset
     :param tmpdir: tmpdir
-    :param fake_dataset_path: fake dataset path
+    :param make_fake_dataset: fake dataset path
     :param categorical_features: categorical_features
     :param numerical_features: numerical_features
     :param target_col: target
     :return: None
     """
-    make_fake_dataset(fake_dataset_path)
-    metrics_path, model_save_path = train_tmp_model(categorical_features, fake_dataset_path,
+    metrics_path, model_save_path = train_tmp_model(categorical_features, make_fake_dataset,
                                                                     numerical_features, target_col,
                                                                     tmpdir)
     assert Path(model_save_path).exists()
@@ -297,11 +299,11 @@ def test_train_pipeline_on_fake_dataset(
 
 
 def test_transformers(
-    fake_dataset_path: str, categorical_features: List[str], numerical_features: List[str]
+    make_fake_dataset: str, categorical_features: List[str], numerical_features: List[str]
 ):
     """
     Test custom transformers
-    :param fake_dataset_path: fake dataset path
+    :param make_fake_dataset: fake dataset path
     :param categorical_features: categorical_features
     :param numerical_features: numerical_features
     :return: None
@@ -311,8 +313,7 @@ def test_transformers(
         numerical_features=numerical_features,
         target_col="target",
     )
-    make_fake_dataset(fake_dataset_path)
-    data = pd.read_csv(fake_dataset_path)
+    data = pd.read_csv(make_fake_dataset)
     transformers = build_transformers(params)
     features, _ = make_features(transformers, data, mode="train")
 
