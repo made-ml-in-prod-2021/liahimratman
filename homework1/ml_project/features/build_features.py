@@ -4,6 +4,7 @@ from sklearn.compose import ColumnTransformer
 from sklearn.impute import SimpleImputer
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import OneHotEncoder
+import logging
 
 from ml_project.params.feature_params import FeatureParams
 from ml_project.transformers.make_transformers import StandardScalerTransformer
@@ -63,12 +64,18 @@ def make_features(transformers: dict, data: pd.DataFrame, mode="val") -> (pd.Dat
     :return: pd.DataFrame (preprocessed data)
     """
     if mode == "train":
+        logging.info("Fitting column transformer ...")
         transformers["column_transformer"].fit(data)
+        logging.info("column transformer fitted")
 
+    logging.info("Column transforming dataset ...")
     data = pd.DataFrame(transformers["column_transformer"].transform(data))
+    logging.info("Dataset transformed")
 
     if mode == "train":
+        logging.info("Fitting standard scaler transformer")
         transformers["standard_scaler_transformer"].fit(data)
+        logging.info("Standard scaler  fitted")
 
     return pd.DataFrame(transformers["standard_scaler_transformer"].transform(data)), transformers
 

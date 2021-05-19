@@ -3,6 +3,7 @@ import pickle
 import yaml
 from hydra.utils import to_absolute_path
 from marshmallow_dataclass import class_schema
+import logging
 
 from .feature_params import FeatureParams
 
@@ -56,14 +57,20 @@ def write_evaluation_pipeline_params(output_path: str, path_to_model: str, colum
         }
     }
 
+    logging.info("Saving column transformer")
     with open(to_absolute_path(column_save_path), 'wb') as output_transformers_stream:
         pickle.dump(transformers["column_transformer"], output_transformers_stream)
+    logging.info("Column transformer saved")
 
+    logging.info("Saving standard scaler transformer")
     with open(to_absolute_path(scaler_save_path), 'wb') as output_transformers_stream:
         pickle.dump(transformers["standard_scaler_transformer"], output_transformers_stream)
+    logging.info("Standard scaler transformer saved")
 
+    logging.info("Dumping evaluation config")
     with open(output_path, "w") as output_stream:
         yaml.safe_dump(eval_config, output_stream)
+    logging.info("Evaluation config dumped")
 
 
 def load_saved_transformers(column_transformer_save_path: str, scaler_transformer_save_path: str):
@@ -73,10 +80,16 @@ def load_saved_transformers(column_transformer_save_path: str, scaler_transforme
     :param scaler_transformer_save_path: saved custom standard scaler transformer path
     :return: dict with transformers
     """
+    logging.info("Column transformer loading ...")
     with open(column_transformer_save_path, 'rb') as output_stream:
         column_transformer = pickle.load(output_stream)
+    logging.info("Column transformer loaded")
+
+    logging.info("Standard scaler transformer loading ...")
     with open(scaler_transformer_save_path, 'rb') as output_stream:
         scaler_transformer = pickle.load(output_stream)
+    logging.info("Standard scaler transformer loaded")
+
     transformers = {
         "column_transformer": column_transformer,
         "standard_scaler_transformer": scaler_transformer,
