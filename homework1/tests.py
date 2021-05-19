@@ -21,12 +21,12 @@ from train_pipeline import train_pipeline
 
 @pytest.fixture()
 def dataset_path():
-    return "homework1/tests_data/train_data_sample.csv"
+    return "tests_data/train_data_sample.csv"
 
 
 @pytest.fixture()
 def fake_dataset_path():
-    return "homework1/tests_data/fake_dataset.csv"
+    return "tests_data/fake_dataset.csv"
 
 
 @pytest.fixture()
