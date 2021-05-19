@@ -23,4 +23,5 @@ jobs:
         pip install -r requirements.txt
     - name: Running pytest
       run: |
-        pytest homework1/tests.py
+        cd homework1
+        pytest tests.py
