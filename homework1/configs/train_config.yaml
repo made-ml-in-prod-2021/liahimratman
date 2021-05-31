@@ -1,0 +1,30 @@
+input_data_path: ml_project/data/heart.csv
+output_model_path: ml_project/models/model.pkl
+metric_path: ml_project/models/metrics.json
+column_transformer_save_path: ml_project/models/custom_column_transformers.pkl
+scaler_transformer_save_path: ml_project/models/custom_scaler_transformers.pkl
+output_config_path: configs/evaluation_config.yaml
+splitting_params:
+  val_size: 0.2
+  random_state: 4
+train_params:
+  model_type: "LogisticRegression"
+  max_iter: 1000
+  random_state: 4
+feature_params:
+  numerical_features:
+    - age
+    - trestbps
+    - chol
+    - thalach
+    - oldpeak
+  categorical_features:
+    - cp
+    - sex
+    - fbs
+    - restecg
+    - exang
+    - slope
+    - ca
+    - thal
+  target_col: target
