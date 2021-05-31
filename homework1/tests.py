@@ -19,22 +19,22 @@ from ml_project.models.model_fit_predict import train_model, serialize_model
 from train_pipeline import train_pipeline
 
 
-@pytest.fixture()
+@pytest.fixture(scope='module')
 def dataset_path():
     return "tests_data/train_data_sample.csv"
 
 
-@pytest.fixture()
+@pytest.fixture(scope='module')
 def fake_dataset_path():
     return "tests_data/fake_dataset.csv"
 
 
-@pytest.fixture()
+@pytest.fixture(scope='module')
 def target_col():
     return "target"
 
 
-@pytest.fixture()
+@pytest.fixture(scope='module')
 def categorical_features() -> List[str]:
     return [
         "cp",
@@ -48,7 +48,7 @@ def categorical_features() -> List[str]:
     ]
 
 
-@pytest.fixture()
+@pytest.fixture(scope='module')
 def numerical_features() -> List[str]:
     return [
         "age",
@@ -59,33 +59,7 @@ def numerical_features() -> List[str]:
     ]
 
 
-def test_load_dataset(dataset_path: str, target_col: str):
-    """
-    Dataset loading test
-    :param dataset_path: dataset path
-    :param target_col: target
-    :return: None
-    """
-    data = pd.read_csv(dataset_path)
-    assert len(data) > 10
-    assert target_col in data.keys()
-
-
-def test_split_dataset(dataset_path: str):
-    """
-    Dataset split test
-    :param dataset_path: dataset path
-    :return: None
-    """
-    val_size = 0.2
-    splitting_params = SplittingParams(random_state=239, val_size=val_size,)
-    data = pd.read_csv(dataset_path)
-    train, val = split_train_val_data(data, splitting_params)
-    assert train.shape[0] > 10
-    assert val.shape[0] > 10
-
-
-@pytest.fixture()
+@pytest.fixture(scope='module')
 def features_and_target(
     dataset_path: str, categorical_features: List[str], numerical_features: List[str]
 ) -> Tuple[pd.DataFrame, pd.Series]:
@@ -109,133 +83,7 @@ def features_and_target(
     return features, target
 
 
-def test_train_model(features_and_target: Tuple[pd.DataFrame, pd.Series]):
-    """
-    Test model training
-    :param features_and_target: Tuple[pd.DataFrame, pd.Series]
-    :return: None
-    """
-    features, target = features_and_target
-    model = train_model(features, target,
-                        train_params=TrainingParams(model_type="LogisticRegression",
-                                                    random_state=4,
-                                                    max_iter=1000))
-    assert isinstance(model, LogisticRegression)
-    assert model.predict(features).shape[0] == target.shape[0]
-
-
-def test_serialize_model(tmpdir: LocalPath):
-    """
-    Test model serialization
-    :param tmpdir: tmpdir
-    :return: None
-    """
-    expected_output = tmpdir.join("model.pkl")
-    model = LogisticRegression(max_iter=1000, random_state=4)
-    real_output = serialize_model(model, expected_output)
-    assert real_output == expected_output
-    assert os.path.exists
-    with open(real_output, "rb") as output_stream:
-        model = pickle.load(output_stream)
-    assert isinstance(model, LogisticRegression)
-
-
-def get_feature_config(
-        target_column: str,
-        categorical_features: List[str],
-        numerical_features: List[str],
-) -> FeatureParams:
-    """
-    Get feature config
-    :param target_column: target
-    :param categorical_features: categorical_features
-    :param numerical_features: numerical_features
-    :return: FeatureParams config
-    """
-    config = FeatureParams(
-        target_col=target_column,
-        numerical_features=numerical_features,
-        categorical_features=categorical_features,
-    )
-
-    return config
-
-
-def train_tmp_model(
-        categorical_features: List[str],
-        dataset_path: str,
-        numerical_features: List[str],
-        target_col: str,
-        tmpdir: Path
-) -> Tuple[str, str]:
-    """
-    Full training pipeline
-    :param categorical_features: categorical_features
-    :param dataset_path: dataset path
-    :param numerical_features: numerical_features
-    :param target_col: target
-    :param tmpdir: tmpdir
-    :return: metrics_path, model_save_path
-    """
-    model_save_path = str(tmpdir / "model.pkl")
-    columns_transformer_save_path = str(tmpdir / "columns.pkl")
-    scaler_transformer_save_path = str(tmpdir / "scaler.pkl")
-    metrics_path = str(tmpdir / "metrics.json")
-    output_config_path = str(tmpdir / "out_config.yaml")
-    feature_config = get_feature_config(target_col, categorical_features, numerical_features)
-    config = TrainingPipelineParams(
-        splitting_params=SplittingParams(
-            val_size=0.2,
-            random_state=4,
-        ),
-        feature_params=feature_config,
-        train_params=TrainingParams(
-            model_type="LogisticRegression",
-            random_state=4,
-            max_iter=1000,
-        ),
-        input_data_path=dataset_path,
-        output_model_path=model_save_path,
-        output_config_path=output_config_path,
-        metric_path=metrics_path,
-        column_transformer_save_path=columns_transformer_save_path,
-        scaler_transformer_save_path=scaler_transformer_save_path,
-    )
-    train_pipeline(config)
-
-    return metrics_path, model_save_path
-
-
-def test_train_pipeline(
-        tmpdir: Path,
-        dataset_path: str,
-        categorical_features: List[str],
-        numerical_features: List[str],
-        target_col: str
-):
-    """
-    Test full pipeline
-    :param tmpdir: tmpdir
-    :param dataset_path: dataset path
-    :param categorical_features: categorical_features
-    :param numerical_features: numerical_features
-    :param target_col: target
-    :return: None
-    """
-    metrics_path, model_save_path = train_tmp_model(categorical_features, dataset_path,
-                                                                    numerical_features, target_col,
-                                                                    tmpdir)
-    assert Path(model_save_path).exists()
-    assert Path(metrics_path).exists()
-    with open(metrics_path, "r") as input_stream:
-        metric_values = json.load(input_stream)
-        assert metric_values["accuracy"] > 0
-        assert metric_values["f1"] > 0
-        assert metric_values["precision"] > 0
-        assert metric_values["recall"] > 0
-
-
-@pytest.fixture()
+@pytest.fixture(scope='module')
 def make_fake_dataset(fake_dataset_path: str):
     """
     Make and save fake dataset
@@ -269,25 +117,160 @@ def make_fake_dataset(fake_dataset_path: str):
     return fake_dataset_path
 
 
-def test_train_pipeline_on_fake_dataset(
-        tmpdir: Path,
-        make_fake_dataset: str,
-        categorical_features: List[str],
-        numerical_features: List[str],
-        target_col: str
-):
+@pytest.fixture(scope='module')
+def feature_config(target_col: str, categorical_features: List[str], numerical_features: List[str]) -> FeatureParams:
     """
-    Test ful pipeline on fake dataset
-    :param tmpdir: tmpdir
-    :param make_fake_dataset: fake dataset path
+    Get feature config
+    :param target_col: target
     :param categorical_features: categorical_features
     :param numerical_features: numerical_features
+    :return: FeatureParams config
+    """
+    config = FeatureParams(
+        target_col=target_col,
+        numerical_features=numerical_features,
+        categorical_features=categorical_features,
+    )
+
+    return config
+
+
+@pytest.fixture(scope='function')
+def train_tmp_model(
+        dataset_path: str,
+        feature_config: FeatureParams,
+        tmpdir: Path
+) -> Tuple[str, str]:
+    """
+    Full training pipeline
+    :param feature_config: features config
+    :param dataset_path: dataset path
+    :param tmpdir: tmpdir
+    :return: metrics_path, model_save_path
+    """
+    model_save_path = str(tmpdir / "model.pkl")
+    columns_transformer_save_path = str(tmpdir / "columns.pkl")
+    scaler_transformer_save_path = str(tmpdir / "scaler.pkl")
+    metrics_path = str(tmpdir / "metrics.json")
+    output_config_path = str(tmpdir / "out_config.yaml")
+    config = TrainingPipelineParams(
+        splitting_params=SplittingParams(
+            val_size=0.2,
+            random_state=4,
+        ),
+        feature_params=feature_config,
+        train_params=TrainingParams(
+            model_type="LogisticRegression",
+            random_state=4,
+            max_iter=1000,
+        ),
+        input_data_path=dataset_path,
+        output_model_path=model_save_path,
+        output_config_path=output_config_path,
+        metric_path=metrics_path,
+        column_transformer_save_path=columns_transformer_save_path,
+        scaler_transformer_save_path=scaler_transformer_save_path,
+    )
+    train_pipeline(config)
+
+    return metrics_path, model_save_path
+
+
+@pytest.fixture(scope='function')
+def train_fake_model(
+        make_fake_dataset: str,
+        feature_config: FeatureParams,
+        tmpdir: Path
+) -> Tuple[str, str]:
+    """
+    Full training pipeline
+    :param feature_config: features config
+    :param make_fake_dataset: fake dataset path
+    :param tmpdir: tmpdir
+    :return: metrics_path, model_save_path
+    """
+    model_save_path = str(tmpdir / "model.pkl")
+    columns_transformer_save_path = str(tmpdir / "columns.pkl")
+    scaler_transformer_save_path = str(tmpdir / "scaler.pkl")
+    metrics_path = str(tmpdir / "metrics.json")
+    output_config_path = str(tmpdir / "out_config.yaml")
+    config = TrainingPipelineParams(
+        splitting_params=SplittingParams(
+            val_size=0.2,
+            random_state=4,
+        ),
+        feature_params=feature_config,
+        train_params=TrainingParams(
+            model_type="LogisticRegression",
+            random_state=4,
+            max_iter=1000,
+        ),
+        input_data_path=make_fake_dataset,
+        output_model_path=model_save_path,
+        output_config_path=output_config_path,
+        metric_path=metrics_path,
+        column_transformer_save_path=columns_transformer_save_path,
+        scaler_transformer_save_path=scaler_transformer_save_path,
+    )
+    train_pipeline(config)
+
+    return metrics_path, model_save_path
+
+
+def test_load_dataset(dataset_path: str, target_col: str):
+    """
+    Dataset loading test
+    :param dataset_path: dataset path
     :param target_col: target
     :return: None
     """
-    metrics_path, model_save_path = train_tmp_model(categorical_features, make_fake_dataset,
-                                                                    numerical_features, target_col,
-                                                                    tmpdir)
+    data = pd.read_csv(dataset_path)
+    assert len(data) > 10
+    assert target_col in data.keys()
+
+
+def test_split_dataset(dataset_path: str):
+    """
+    Dataset split test
+    :param dataset_path: dataset path
+    :return: None
+    """
+    val_size = 0.2
+    splitting_params = SplittingParams(random_state=239, val_size=val_size,)
+    data = pd.read_csv(dataset_path)
+    train, val = split_train_val_data(data, splitting_params)
+    assert train.shape[0] > 10
+    assert val.shape[0] > 10
+
+
+def test_train_pipeline(
+        train_tmp_model: Tuple,
+):
+    """
+    Test full pipeline
+    :param train_tmp_model: metrics_path, model_save_path
+    :return: None
+    """
+    metrics_path, model_save_path = train_tmp_model#(dataset_path, feature_config, tmpdir)
+    assert Path(model_save_path).exists()
+    assert Path(metrics_path).exists()
+    with open(metrics_path, "r") as input_stream:
+        metric_values = json.load(input_stream)
+        assert metric_values["accuracy"] > 0
+        assert metric_values["f1"] > 0
+        assert metric_values["precision"] > 0
+        assert metric_values["recall"] > 0
+
+
+def test_train_pipeline_on_fake_dataset(
+        train_fake_model: Tuple,
+):
+    """
+    Test full pipeline on fake dataset
+    :param train_fake_model: metrics_path, model_save_path
+    :return: None
+    """
+    metrics_path, model_save_path = train_fake_model
     assert Path(model_save_path).exists()
     assert Path(metrics_path).exists()
     with open(metrics_path, "r") as input_stream:
@@ -321,3 +304,34 @@ def test_transformers(
     assert features.values.mean(axis=0).min() > -1e-9
     assert features.values.std(axis=0).max() < 1 + 1e-9
     assert features.values.std(axis=0).min() > 1 - 1e-9
+
+
+def test_train_model(features_and_target: Tuple[pd.DataFrame, pd.Series]):
+    """
+    Test model training
+    :param features_and_target: Tuple[pd.DataFrame, pd.Series]
+    :return: None
+    """
+    features, target = features_and_target
+    model = train_model(features, target,
+                        train_params=TrainingParams(model_type="LogisticRegression",
+                                                    random_state=4,
+                                                    max_iter=1000))
+    assert isinstance(model, LogisticRegression)
+    assert model.predict(features).shape[0] == target.shape[0]
+
+
+def test_serialize_model(tmpdir: LocalPath):
+    """
+    Test model serialization
+    :param tmpdir: tmpdir
+    :return: None
+    """
+    expected_output = tmpdir.join("model.pkl")
+    model = LogisticRegression(max_iter=1000, random_state=4)
+    real_output = serialize_model(model, expected_output)
+    assert real_output == expected_output
+    assert os.path.exists
+    with open(real_output, "rb") as output_stream:
+        model = pickle.load(output_stream)
+    assert isinstance(model, LogisticRegression)
