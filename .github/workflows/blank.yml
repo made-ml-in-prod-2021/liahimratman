@@ -24,4 +24,4 @@ jobs:
     - name: Running pytest
       run: |
         cd homework1
-        pytest tests_pipeline.py tests_transformer.py
+        pytest tests
