@@ -17,7 +17,6 @@ settings = Settings()
 
 
 def rebuild_dataframe(params: DiseaseModel, metadata: Dict[str, np.dtype]) -> pd.DataFrame:
-
     try:
         data = pd.DataFrame(params.features, columns=params.columns)
     except ValueError:
