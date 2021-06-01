@@ -30,9 +30,9 @@ Config2
 -----------
 
 
-Аналогично, переходим в homework1:
+Аналогично, переходим в online_inference:
 
-`cd homework1`
+`cd online_inference`
 
 -----------
 
